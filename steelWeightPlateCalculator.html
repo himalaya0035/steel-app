@@ -6,96 +6,371 @@
     <title>Steel Plate Weight Calculator</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background: #f9f9f9;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f2f5;
         padding: 20px;
+        color: #333;
       }
+
       h2 {
         text-align: center;
+        margin-bottom: 20px;
+        color: #222;
       }
+
+      #captureArea {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 15px;
+        margin-top: 10px;
         background: #fff;
+        min-width: 800px;
       }
+
       th,
       td {
-        border: 1px solid #ccc;
-        padding: 8px;
+        border: 1px solid #e0e0e0;
+        padding: 10px;
         text-align: center;
+        vertical-align: middle;
       }
+
+      th {
+        background-color: #f7f7f7;
+        font-weight: 600;
+        color: #444;
+      }
+
       input,
       select {
-        padding: 6px;
+        padding: 8px;
         width: 100%;
         box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
       }
+
       button {
         margin: 5px;
-        padding: 8px 14px;
+        padding: 10px 18px;
         background: #007bff;
-        color: #fff;
+        color: white;
         border: none;
-        border-radius: 5px;
+        font-weight: 500;
+        font-size: 15px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: background 0.2s ease;
       }
+
       button:hover {
         background: #0056b3;
       }
+
       .result {
         margin-top: 20px;
-        font-size: 1.1em;
-        font-weight: bold;
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #2d6a4f;
+        text-align: center;
       }
-      #captureArea {
-        background: #fff;
-        padding: 10px;
-        display: inline-block;
-      }
+
       #detailsBlock {
         margin-top: 20px;
-        padding: 10px;
-        background: #eef;
-        border: 1px solid #99c;
+        padding: 15px;
+        background: #e8f0fe;
+        border-left: 4px solid #007bff;
+        border-radius: 6px;
+        font-family: monospace;
         white-space: pre-line;
+        font-size: 14px;
+      }
+
+      /* Mobile View: Cards instead of table */
+      @media (max-width: 768px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+
+        thead {
+          display: none;
+        }
+
+        tr {
+          margin-bottom: 15px;
+          background: #fff;
+          border-radius: 8px;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+          padding: 12px;
+        }
+
+        td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 12px;
+          border: none;
+          border-bottom: 1px solid #eee;
+        }
+
+        td:last-child {
+          border-bottom: none;
+        }
+
+        td::before {
+          content: attr(data-label);
+          font-weight: 600;
+          flex: 1;
+          text-align: left;
+          padding-right: 10px;
+          color: #555;
+        }
+
+        td > * {
+          flex: 2;
+          max-width: 60%;
+        }
+
+        input,
+        select {
+          font-size: 13px;
+        }
+
+        button {
+          width: 100%;
+          padding: 12px;
+          font-size: 14px;
+        }
+
+        .action-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        #captureArea {
+          padding: 15px;
+        }
+
+        .result {
+          font-size: 1.1em;
+        }
+
+        #detailsBlock {
+          font-size: 13px;
+          word-break: break-word;
+        }
+      }
+
+      /* Optional enhancements */
+      .unit,
+      .len_m,
+      .len_mm,
+      .len_ft,
+      .len_in,
+      .wid_m,
+      .wid_mm,
+      .wid_ft,
+      .wid_in,
+      .thickness_mm,
+      .pieces {
+        margin-bottom: 5px;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background: #f6f8fa;
+        padding: 16px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: auto;
+        background: #fff;
+        padding: 16px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        color: #222;
+      }
+
+      .card {
+        background: #fafafa;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+      }
+
+      .card.secondary {
+        background: #f0f4f8;
+      }
+
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+      }
+
+      thead {
+        background: #e0e7ef;
+      }
+
+      th,
+      td {
+        padding: 12px 8px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        font-weight: bold;
+        font-size: 0.95rem;
+      }
+
+      td input {
+        width: 80px;
+        padding: 6px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      .result {
+        font-weight: bold;
+        font-size: 1rem;
+        margin-top: 10px;
+        color: #2e7d32;
+      }
+
+      .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .button-group button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #1976d2;
+        color: #fff;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background-color 0.3s;
+      }
+
+      .button-group button:hover {
+        background-color: #0d47a1;
+      }
+
+      @media (max-width: 768px) {
+        th,
+        td {
+          font-size: 0.85rem;
+          padding: 8px 6px;
+        }
+
+        td input {
+          width: 100%;
+        }
+
+        table {
+          min-width: unset;
+        }
+
+        .card {
+          padding: 12px;
+        }
+
+        h2 {
+          font-size: 1.3rem;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .button-group button {
+          width: 100%;
+        }
+
+        .result {
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
-    <h2>Steel Plate Weight Calculator</h2>
+    <div class="container">
+      <h2>🧮 Steel Plate Weight Calculator</h2>
 
-    <div id="captureArea">
-      <table id="dimensionTable">
-        <thead>
-          <tr>
-            <th>Unit</th>
-            <th>Length</th>
-            <th>Width</th>
-            <th>Thickness (mm)</th>
-            <th>Pieces</th>
-            <th>Weight (kg)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div id="captureArea" class="card">
+        <div class="table-responsive">
+          <table id="dimensionTable">
+            <thead>
+              <tr>
+                <th>Unit</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Thickness (mm)</th>
+                <th>Pieces</th>
+                <th>Weight (kg)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
 
-      <div class="result" id="result">✅ Total Weight: 0.00 kg</div>
+        <div class="result" id="result">✅ Total Weight: 0.00 kg</div>
 
-      <div id="detailsBlock">
-        <!-- Will fill with detailed description -->
+        <div id="detailsBlock" class="card secondary">
+          <!-- Will fill with detailed description -->
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button onclick="addRow()">➕ Add Row</button>
+        <button onclick="calculateTotal()">✅ Calculate</button>
+        <button onclick="downloadAsImage()">📸 Download Image</button>
+        <button onclick="downloadAsPDF()">📄 Download PDF</button>
       </div>
     </div>
 
-    <button onclick="addRow()">➕ Add Row</button>
-    <button onclick="calculateTotal()">✅ Calculate</button>
-    <button onclick="downloadAsImage()">📸 Download Image</button>
-    <button onclick="downloadAsPDF()">📄 Download PDF</button>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <script>
       function addRow() {
         const tbody = document.querySelector("#dimensionTable tbody");
