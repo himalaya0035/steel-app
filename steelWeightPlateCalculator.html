@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Steel Plate Weight Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+        padding: 20px;
+      }
+      h2 {
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background: #fff;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+      }
+      input,
+      select {
+        padding: 6px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        margin: 5px;
+        padding: 8px 14px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .result {
+        margin-top: 20px;
+        font-size: 1.1em;
+        font-weight: bold;
+      }
+      #captureArea {
+        background: #fff;
+        padding: 10px;
+        display: inline-block;
+      }
+      #detailsBlock {
+        margin-top: 20px;
+        padding: 10px;
+        background: #eef;
+        border: 1px solid #99c;
+        white-space: pre-line;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Steel Plate Weight Calculator</h2>
+
+    <div id="captureArea">
+      <table id="dimensionTable">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Length</th>
+            <th>Width</th>
+            <th>Thickness (mm)</th>
+            <th>Pieces</th>
+            <th>Weight (kg)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="result" id="result">✅ Total Weight: 0.00 kg</div>
+
+      <div id="detailsBlock">
+        <!-- Will fill with detailed description -->
+      </div>
+    </div>
+
+    <button onclick="addRow()">➕ Add Row</button>
+    <button onclick="calculateTotal()">✅ Calculate</button>
+    <button onclick="downloadAsImage()">📸 Download Image</button>
+    <button onclick="downloadAsPDF()">📄 Download PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+      function addRow() {
+        const tbody = document.querySelector("#dimensionTable tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+    <td>
+      <select class="unit">
+        <option value="m">Meters</option>
+        <option value="mm">Millimeters</option>
+        <option value="ft">Feet & Inches</option>
+      </select>
+    </td>
+    <td>
+      <div class="m-inputs">
+        <input type="number" step="0.01" class="len_m" placeholder="Length m">
+      </div>
+      <div class="mm-inputs" style="display:none;">
+        <input type="number" step="0.1" class="len_mm" placeholder="Length mm">
+      </div>
+      <div class="ft-inputs" style="display:none;">
+        <input type="number" step="0.01" class="len_ft" placeholder="ft">
+        <input type="number" step="0.01" class="len_in" placeholder="in">
+      </div>
+    </td>
+    <td>
+      <div class="m-inputs">
+        <input type="number" step="0.01" class="wid_m" placeholder="Width m">
+      </div>
+      <div class="mm-inputs" style="display:none;">
+        <input type="number" step="0.1" class="wid_mm" placeholder="Width mm">
+      </div>
+      <div class="ft-inputs" style="display:none;">
+        <input type="number" step="0.01" class="wid_ft" placeholder="ft">
+        <input type="number" step="0.01" class="wid_in" placeholder="in">
+      </div>
+    </td>
+    <td>
+      <input type="number" step="0.1" class="thickness_mm" placeholder="Thickness mm">
+    </td>
+    <td>
+      <input type="number" step="1" class="pieces" placeholder="Qty">
+    </td>
+    <td>
+      <span class="weightCell">0.00</span>
+    </td>
+    <td>
+      <button onclick="this.closest('tr').remove(); calculateTotal();">🗑 Remove</button>
+    </td>
+  `;
+        tbody.appendChild(row);
+
+        row.querySelector(".unit").addEventListener("change", function () {
+          const unit = this.value;
+          row
+            .querySelectorAll(".m-inputs")
+            .forEach(
+              (el) => (el.style.display = unit === "m" ? "block" : "none")
+            );
+          row
+            .querySelectorAll(".mm-inputs")
+            .forEach(
+              (el) => (el.style.display = unit === "mm" ? "block" : "none")
+            );
+          row
+            .querySelectorAll(".ft-inputs")
+            .forEach(
+              (el) => (el.style.display = unit === "ft" ? "block" : "none")
+            );
+        });
+      }
+
+      // Add one initial row
+      addRow();
+
+      function calculateTotal() {
+        const density = 7850; // kg/m3
+        let totalWeight = 0;
+        let description = "📌 *Detailed Results:*\n";
+
+        document
+          .querySelectorAll("#dimensionTable tbody tr")
+          .forEach((row, i) => {
+            const unit = row.querySelector(".unit").value;
+            let length_m = 0;
+            let width_m = 0;
+            const thickness_mm =
+              parseFloat(row.querySelector(".thickness_mm").value) || 0;
+            const pieces = parseInt(row.querySelector(".pieces").value) || 0;
+            let lenDisplay = "";
+            let widDisplay = "";
+
+            if (unit === "m") {
+              const l = parseFloat(row.querySelector(".len_m").value) || 0;
+              const w = parseFloat(row.querySelector(".wid_m").value) || 0;
+              length_m = l;
+              width_m = w;
+              lenDisplay = `${l} m`;
+              widDisplay = `${w} m`;
+            } else if (unit === "mm") {
+              const l = parseFloat(row.querySelector(".len_mm").value) || 0;
+              const w = parseFloat(row.querySelector(".wid_mm").value) || 0;
+              length_m = l / 1000;
+              width_m = w / 1000;
+              lenDisplay = `${l} mm`;
+              widDisplay = `${w} mm`;
+            } else if (unit === "ft") {
+              const lf = parseFloat(row.querySelector(".len_ft").value) || 0;
+              const li = parseFloat(row.querySelector(".len_in").value) || 0;
+              const wf = parseFloat(row.querySelector(".wid_ft").value) || 0;
+              const wi = parseFloat(row.querySelector(".wid_in").value) || 0;
+              length_m = (lf * 12 + li) * 0.0254;
+              width_m = (wf * 12 + wi) * 0.0254;
+              lenDisplay = `${lf} ft ${li} in`;
+              widDisplay = `${wf} ft ${wi} in`;
+            }
+
+            const thickness_m = thickness_mm / 1000;
+            let weightEach = 0;
+            if (length_m > 0 && width_m > 0 && thickness_m > 0 && pieces > 0) {
+              const volume = length_m * width_m * thickness_m;
+              weightEach = volume * density;
+              totalWeight += weightEach * pieces;
+
+              description += `Row ${
+                i + 1
+              }: ${lenDisplay} × ${widDisplay} × ${thickness_mm} mm × ${pieces} pcs = ${(
+                weightEach * pieces
+              ).toFixed(2)} kg\n`;
+            } else {
+              description += `Row ${i + 1}: incomplete data\n`;
+            }
+            row.querySelector(".weightCell").innerText = (
+              weightEach * pieces
+            ).toFixed(2);
+          });
+
+        description += `✅ Total Weight: ${totalWeight.toFixed(2)} kg`;
+        document.getElementById(
+          "result"
+        ).innerText = `✅ Total Weight: ${totalWeight.toFixed(2)} kg`;
+        document.getElementById("detailsBlock").innerText = description;
+      }
+
+      function downloadAsImage() {
+        html2canvas(document.querySelector("#captureArea"), { scale: 2 }).then(
+          (canvas) => {
+            const link = document.createElement("a");
+            link.download = "steel_weight_results.png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+          }
+        );
+      }
+
+      async function downloadAsPDF() {
+        const { jsPDF } = window.jspdf;
+        const canvas = await html2canvas(
+          document.querySelector("#captureArea"),
+          { scale: 2 }
+        );
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft > 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save("steel_weight_results.pdf");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steel Selling Price Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .unit-row { display: flex; gap: 10px; }
+    .unit-row input { flex: 2; }
+    .unit-row select { flex: 1; }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+    .output {
+      margin-top: 25px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Steel Selling Price Calculator</h2>
+
+  <label>Raw Material Cost (₹/kg):
+    <input type="number" id="rawCost" step="0.01">
+  </label>
+
+  <label>Total Raw Weight (kg):
+    <input type="number" id="rawWeight" step="0.01">
+  </label>
+
+  <label>Scrap Weight (kg):
+    <input type="number" id="scrapWeight" step="0.01">
+  </label>
+
+  <label>Section Weight:
+    <div class="unit-row">
+      <input type="number" id="sectionWeight" step="0.001">
+      <select id="sectionUnit">
+        <option value="ft">kg/ft</option>
+        <option value="m">kg/m</option>
+      </select>
+    </div>
+  </label>
+
+  <label>Raw Material Length:
+    <div class="unit-row">
+      <input type="number" id="rawLength" step="0.01">
+      <select id="rawUnit">
+        <option value="ft">feet</option>
+        <option value="m">meters</option>
+      </select>
+    </div>
+  </label>
+
+  <label>Scrap Length:
+    <div class="unit-row">
+      <input type="number" id="scrapLength" step="0.01">
+      <select id="scrapUnit">
+        <option value="ft">feet</option>
+        <option value="m">meters</option>
+      </select>
+    </div>
+  </label>
+
+  <label>Scrap Resale Price (₹/kg):
+    <input type="number" id="scrapPrice" step="0.01">
+  </label>
+
+  <label>Overhead Charges (₹):
+    <input type="number" id="overhead" step="0.01">
+  </label>
+
+  <label>Profit Margin (%):
+    <input type="number" id="margin" step="0.01" placeholder="Optional">
+  </label>
+
+  <button onclick="calculate()">CALCULATE</button>
+
+  <div class="output" id="result"></div>
+
+  <script>
+    function toFeet(length, unit) {
+      if (unit === 'm') {
+        return length * 3.28084; // meters to feet
+      }
+      return length; // already in feet
+    }
+
+    function toKgPerFt(weight, unit) {
+      if (unit === 'm') {
+        return weight / 3.28084; // kg/m to kg/ft
+      }
+      return weight; // already kg/ft
+    }
+
+    function calculate() {
+      const rawCost = parseFloat(document.getElementById('rawCost').value);
+      const scrapPrice = parseFloat(document.getElementById('scrapPrice').value);
+      const overhead = parseFloat(document.getElementById('overhead').value);
+      const margin = parseFloat(document.getElementById('margin').value) || 0;
+
+      let rawWeight = parseFloat(document.getElementById('rawWeight').value);
+      let scrapWeight = parseFloat(document.getElementById('scrapWeight').value);
+
+      // lengths & section weight
+      const sectionVal = parseFloat(document.getElementById('sectionWeight').value);
+      const sectionUnit = document.getElementById('sectionUnit').value;
+
+      const rawLengthVal = parseFloat(document.getElementById('rawLength').value);
+      const rawUnit = document.getElementById('rawUnit').value;
+
+      const scrapLengthVal = parseFloat(document.getElementById('scrapLength').value);
+      const scrapUnit = document.getElementById('scrapUnit').value;
+
+      if (isNaN(rawCost) || isNaN(scrapPrice) || isNaN(overhead)) {
+        document.getElementById('result').innerHTML = "<strong>Please fill all required fields (costs/overhead).</strong>";
+        return;
+      }
+
+      // If section weight & length provided, override
+      if (!isNaN(sectionVal) && !isNaN(rawLengthVal)) {
+        const sectionWKgFt = toKgPerFt(sectionVal, sectionUnit);
+        const rawLenFt = toFeet(rawLengthVal, rawUnit);
+        rawWeight = sectionWKgFt * rawLenFt;
+      }
+      if (!isNaN(sectionVal) && !isNaN(scrapLengthVal)) {
+        const sectionWKgFt = toKgPerFt(sectionVal, sectionUnit);
+        const scrapLenFt = toFeet(scrapLengthVal, scrapUnit);
+        scrapWeight = sectionWKgFt * scrapLenFt;
+      }
+
+      if (isNaN(rawWeight) || isNaN(scrapWeight)) {
+        document.getElementById('result').innerHTML = "<strong>Please provide either weights or lengths (with section weight).</strong>";
+        return;
+      }
+
+      const netWeight = rawWeight - scrapWeight;
+      const rawCostTotal = rawCost * rawWeight;
+      const scrapValue = scrapWeight * scrapPrice;
+      const totalCost = rawCostTotal - scrapValue + overhead;
+      const basePricePerKg = totalCost / netWeight;
+      const finalPricePerKg = basePricePerKg * (1 + margin / 100);
+
+      document.getElementById('result').innerHTML = `
+        <strong>Results:</strong><br>
+        Raw Material Weight: <strong>${rawWeight.toFixed(2)} kg</strong><br>
+        Scrap Weight: <strong>${scrapWeight.toFixed(2)} kg</strong><br>
+        Net Finished Weight: <strong>${netWeight.toFixed(2)} kg</strong><br>
+        Total Cost: <strong>₹${totalCost.toFixed(2)}</strong><br>
+        Base Selling Price/kg: <strong>₹${basePricePerKg.toFixed(2)}</strong><br>
+        Final Selling Price/kg (with ${margin}% margin): <strong>₹${finalPricePerKg.toFixed(2)}</strong>
+      `;
+    }
+  </script>
+
+</body>
+</html>
