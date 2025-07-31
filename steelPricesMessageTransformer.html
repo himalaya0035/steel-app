@@ -191,6 +191,34 @@
       box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
     }
 
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+      color: white;
+    }
+
+    .btn-telegram:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3);
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
     .output-section {
       background: white;
       border-radius: 16px;
@@ -295,10 +323,21 @@
         flex-direction: column;
       }
 
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
+             .btn {
+         width: 100%;
+         justify-content: center;
+       }
+
+       .output-actions {
+         flex-direction: column;
+         gap: 8px;
+       }
+
+       .section-header {
+         flex-direction: column;
+         gap: 15px;
+         align-items: stretch;
+       }
     }
 
     @media (max-width: 480px) {
@@ -343,22 +382,30 @@
           </div>
         </div>
 
-        <!-- Output Section -->
-        <div class="section">
-          <div class="section-header">
-            <div class="section-title">
-              📤 Transformed Output
-            </div>
-            <button class="btn btn-success" onclick="copyOutput()">
-              📋 Copy
-            </button>
-          </div>
-          <div class="section-content">
-            <div id="outputMessage" class="output-text">
-              Transformed output will appear here...
-            </div>
-          </div>
-        </div>
+                          <!-- Output Section -->
+         <div class="section">
+           <div class="section-header">
+             <div class="section-title">
+               📤 Transformed Output
+             </div>
+           </div>
+           <div class="section-content">
+             <div id="outputMessage" class="output-text">
+               Transformed output will appear here...
+             </div>
+             <div class="output-actions">
+               <button class="btn btn-success" onclick="copyOutput()">
+                 📋 Copy
+               </button>
+               <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
+                 📱 WhatsApp
+               </button>
+               <button class="btn btn-telegram" onclick="shareToTelegram()">
+                 📬 Telegram
+               </button>
+             </div>
+           </div>
+         </div>
       </div>
 
       <!-- Presets Section -->
@@ -747,18 +794,42 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
       }
     }
 
-    function copyOutput() {
-      const output = document.getElementById('outputMessage').textContent;
-      if (output && output !== 'Transformed output will appear here...') {
-        navigator.clipboard.writeText(output).then(() => {
-          UIManager.showToast('Output copied to clipboard!');
-        }).catch(() => {
-          UIManager.showToast('Failed to copy to clipboard', 'error');
-        });
-      } else {
-        UIManager.showToast('No output to copy', 'error');
-      }
-    }
+         function copyOutput() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         navigator.clipboard.writeText(output).then(() => {
+           UIManager.showToast('Output copied to clipboard!');
+         }).catch(() => {
+           UIManager.showToast('Failed to copy to clipboard', 'error');
+         });
+       } else {
+         UIManager.showToast('No output to copy', 'error');
+       }
+     }
+
+     function shareToWhatsApp() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         const encodedText = encodeURIComponent(output);
+         const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+         window.open(whatsappUrl, '_blank');
+         UIManager.showToast('Opening WhatsApp...');
+       } else {
+         UIManager.showToast('No output to share', 'error');
+       }
+     }
+
+     function shareToTelegram() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         const encodedText = encodeURIComponent(output);
+         const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodedText}`;
+         window.open(telegramUrl, '_blank');
+         UIManager.showToast('Opening Telegram...');
+       } else {
+         UIManager.showToast('No output to share', 'error');
+       }
+     }
 
     function resetToDefaults() {
       PresetManager.resetToDefaults();
