@@ -46,6 +46,28 @@
     .header p {
       font-size: 1.1rem;
       opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .old-calculator-link {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .old-calculator-link:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .content {
@@ -312,6 +334,11 @@
         font-size: 1.8rem;
       }
 
+      .old-calculator-link {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+      }
+
       .content {
         padding: 20px;
       }
@@ -371,10 +398,11 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h2>💰 Steel Selling Price Calculator</h2>
-      <p>Calculate profitable selling prices for steel products</p>
-    </div>
+          <div class="header">
+        <h2>💰 Steel Selling Price Calculator</h2>
+        <p>Calculate profitable selling prices for steel products</p>
+        <a href="steelProfitCalculatorOld.html" class="old-calculator-link">📋 View Old Calculator</a>
+      </div>
 
     <div class="content">
       <div class="calculator-section">
