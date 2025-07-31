@@ -4,87 +4,260 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Steel Calculator Tools</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0a0a0a" />
-
+    <meta name="theme-color" content="#4f46e5" />
     <style>
       * {
         box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
       body {
-        margin: 0;
-        padding: 0;
-        font-family: "Inter", sans-serif;
-        background: linear-gradient(135deg, #e0f7fa, #e1f5fe);
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #2d3748;
+        line-height: 1.6;
       }
 
       .container {
-        background: #ffffff;
-        padding: 40px 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        text-align: center;
-        max-width: 400px;
-        width: 90%;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-        color: #263238;
-        margin-bottom: 25px;
-      }
-
-      .btn-group {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 18px;
       }
 
-      .btn-group a {
-        text-decoration: none;
-        padding: 14px;
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        color: #4a5568;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .calculators-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        flex: 1;
+      }
+
+      .calculators-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .calculator-card {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .calculator-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .calculator-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .calculator-description {
         font-size: 1rem;
-        font-weight: 500;
-        background-color: #0288d1;
-        color: white;
-        border-radius: 8px;
-        transition: transform 0.2s ease, background-color 0.3s ease;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        color: #4a5568;
+        margin-bottom: 25px;
+        line-height: 1.6;
       }
 
-      .btn-group a:hover {
-        background-color: #01579b;
-        transform: translateY(-2px);
+
+
+      .calculator-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
       }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+      }
+
+
+
+
 
       footer {
-        margin-top: 25px;
-        font-size: 0.85rem;
-        color: #607d8b;
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+        }
+
+        .header {
+          padding: 30px 20px;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .header p {
+          font-size: 1rem;
+        }
+
+                 .calculators-container {
+           padding: 25px 20px;
+         }
+
+         .calculators-grid {
+           grid-template-columns: 1fr;
+           gap: 20px;
+         }
+
+        .calculator-title {
+          font-size: 1.5rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+                 .btn-primary {
+           width: 100%;
+           justify-content: center;
+         }
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 1.8rem;
+        }
+
+        .calculator-title {
+          font-size: 1.3rem;
+        }
+
+                 .calculator-icon {
+           font-size: 2.5rem;
+         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Steel Calculator Tools</h1>
-      <div class="btn-group">
-        <a href="steelProfitCalculator.html">💰 Steel Profit Calculator</a>
-        <a href="steelWeightPlateCalculator.html"
-          >⚖️ Steel Weight Plate Calculator</a
-        >
+      <div class="header">
+        <h1>Steel Calculator Tools</h1>
+        <p>Professional steel calculation tools designed for modern businesses. Calculate weights, profits, and more with precision and ease.</p>
       </div>
-      <footer>Built with ❤️ for steel businesses</footer>
+
+      <div class="calculators-container">
+        <div class="calculators-grid">
+          <div class="calculator-card">
+            <span class="calculator-icon">⚖️</span>
+            <div class="calculator-title">
+              Steel Weight Calculator
+            </div>
+            <div class="calculator-description">
+              Calculate steel plate weights with multiple units and export options.
+            </div>
+            <div class="action-buttons">
+              <a href="steelWeightPlateCalculator.html" class="btn-primary">
+                🚀 Open Calculator
+              </a>
+            </div>
+          </div>
+
+          <div class="calculator-card">
+            <span class="calculator-icon">💰</span>
+            <div class="calculator-title">
+              Steel Profit Calculator
+            </div>
+            <div class="calculator-description">
+              Calculate profitable selling prices with cost analysis and profit margins.
+            </div>
+            <div class="action-buttons">
+              <a href="steelProfitCalculator.html" class="btn-primary">
+                🚀 Open Calculator
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        Built with ❤️ for steel businesses | Professional steel calculation tools
+      </footer>
     </div>
+
     <script>
+
+
+      // Register service worker
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
           navigator.serviceWorker.register("service-worker.js").then(
