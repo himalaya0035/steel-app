@@ -650,8 +650,31 @@
 
       function downloadAsImage() {
         const captureArea = document.querySelector(".calculator-section");
+        const resultsSection = document.querySelector(".results-section");
+        const detailsBlock = document.querySelector(".details-block");
         
-        html2canvas(captureArea, { 
+        // Create a temporary container to capture all sections
+        const tempContainer = document.createElement('div');
+        tempContainer.style.background = 'white';
+        tempContainer.style.padding = '20px';
+        tempContainer.style.borderRadius = '16px';
+        tempContainer.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+        tempContainer.style.margin = '20px';
+        
+        // Clone the sections to avoid modifying the original
+        const calculatorClone = captureArea.cloneNode(true);
+        const resultsClone = resultsSection ? resultsSection.cloneNode(true) : null;
+        const detailsClone = detailsBlock ? detailsBlock.cloneNode(true) : null;
+        
+        // Add cloned sections to temp container
+        tempContainer.appendChild(calculatorClone);
+        if (resultsClone) tempContainer.appendChild(resultsClone);
+        if (detailsClone) tempContainer.appendChild(detailsClone);
+        
+        // Temporarily add to body for capture
+        document.body.appendChild(tempContainer);
+        
+        html2canvas(tempContainer, { 
           scale: 2,
           backgroundColor: '#ffffff',
           useCORS: true
@@ -660,15 +683,41 @@
           link.download = `steel_weight_calculation_${new Date().toISOString().split('T')[0]}.png`;
           link.href = canvas.toDataURL("image/png");
           link.click();
+          
+          // Clean up
+          document.body.removeChild(tempContainer);
         });
       }
 
       async function downloadAsPDF() {
         const { jsPDF } = window.jspdf;
         const captureArea = document.querySelector(".calculator-section");
+        const resultsSection = document.querySelector(".results-section");
+        const detailsBlock = document.querySelector(".details-block");
         
         try {
-          const canvas = await html2canvas(captureArea, { 
+          // Create a temporary container to capture all sections
+          const tempContainer = document.createElement('div');
+          tempContainer.style.background = 'white';
+          tempContainer.style.padding = '20px';
+          tempContainer.style.borderRadius = '16px';
+          tempContainer.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+          tempContainer.style.margin = '20px';
+          
+          // Clone the sections to avoid modifying the original
+          const calculatorClone = captureArea.cloneNode(true);
+          const resultsClone = resultsSection ? resultsSection.cloneNode(true) : null;
+          const detailsClone = detailsBlock ? detailsBlock.cloneNode(true) : null;
+          
+          // Add cloned sections to temp container
+          tempContainer.appendChild(calculatorClone);
+          if (resultsClone) tempContainer.appendChild(resultsClone);
+          if (detailsClone) tempContainer.appendChild(detailsClone);
+          
+          // Temporarily add to body for capture
+          document.body.appendChild(tempContainer);
+          
+          const canvas = await html2canvas(tempContainer, { 
             scale: 2,
             backgroundColor: '#ffffff',
             useCORS: true
@@ -695,6 +744,9 @@
           }
 
           pdf.save(`steel_weight_calculation_${new Date().toISOString().split('T')[0]}.pdf`);
+          
+          // Clean up
+          document.body.removeChild(tempContainer);
         } catch (error) {
           console.error('Error generating PDF:', error);
           alert('Error generating PDF. Please try again.');
