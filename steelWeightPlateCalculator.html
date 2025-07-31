@@ -301,14 +301,12 @@
 
         .section-header {
           padding: 15px 20px;
-          flex-direction: column;
-          gap: 15px;
-          align-items: stretch;
         }
 
         .add-row-btn {
           width: 100%;
           justify-content: center;
+          margin-top: 20px;
         }
 
         .table-container {
@@ -439,14 +437,11 @@
 
       <div class="content">
         <div class="calculator-section">
-          <div class="section-header">
-            <div class="section-title">
-              📏 Dimensions & Calculations
-            </div>
-            <button class="add-row-btn" onclick="addRow()">
-              ➕ Add New Plate
-            </button>
+                  <div class="section-header">
+          <div class="section-title">
+            📏 Dimensions & Calculations
           </div>
+        </div>
 
           <div class="table-container">
             <table class="dimension-table" id="dimensionTable">
@@ -463,6 +458,12 @@
               </thead>
               <tbody></tbody>
             </table>
+          </div>
+          
+          <div style="padding: 0 20px 20px 20px;">
+            <button class="add-row-btn" onclick="addRow()">
+              ➕ Add New Plate
+            </button>
           </div>
         </div>
 
