@@ -1,182 +1,711 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Steel Selling Price Calculator</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f2f2f2; }
-    h2 { text-align: center; }
-    label { display: block; margin-top: 15px; font-weight: bold; }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .unit-row { display: flex; gap: 10px; }
-    .unit-row input { flex: 2; }
-    .unit-row select { flex: 1; }
-    button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      background: #4CAF50;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3748;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
       color: white;
-      font-size: 1em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      padding: 30px 20px;
+      text-align: center;
     }
-    button:hover { background: #45a049; }
-    .output {
-      margin-top: 25px;
+
+    .header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .calculator-section {
       background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .section-header {
+      background: #f8fafc;
+      padding: 20px 30px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a202c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-container {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      color: #374151;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: #9ca3af;
+    }
+
+    .unit-row {
+      display: flex;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .unit-row .form-control {
+      flex: 1;
+    }
+
+    .unit-row select {
+      flex: 0 0 120px;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .calculate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .calculate-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .results-section {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1px solid #bbf7d0;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+      display: none;
+    }
+
+    .results-section.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #059669;
+      margin-bottom: 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .result-item {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #d1fae5;
+      text-align: center;
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #059669;
+    }
+
+    .final-price {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .final-price .result-label {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .final-price .result-value {
+      color: white;
+      font-size: 2rem;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
       padding: 15px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .info-tooltip {
+      position: relative;
+      display: inline-block;
+      margin-left: 8px;
+      cursor: help;
+    }
+
+    .info-tooltip::after {
+      content: 'ℹ️';
+      font-size: 0.9rem;
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: #1f2937;
+      color: white;
+      text-align: center;
       border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .info-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        border-radius: 16px;
+      }
+
+      .header {
+        padding: 25px 15px;
+      }
+
+      .header h2 {
+        font-size: 1.8rem;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .form-container {
+        padding: 20px;
+      }
+
+      .unit-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .unit-row select {
+        flex: none;
+        width: 100%;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .result-item {
+        padding: 15px;
+      }
+
+      .result-value {
+        font-size: 1.3rem;
+      }
+
+      .final-price .result-value {
+        font-size: 1.6rem;
+      }
+
+      .calculate-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h2 {
+        font-size: 1.5rem;
+      }
+
+      .form-control {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h2>Steel Selling Price Calculator</h2>
-
-  <label>Raw Material Cost (₹/kg):
-    <input type="number" id="rawCost" step="0.01">
-  </label>
-
-  <label>Total Raw Weight (kg):
-    <input type="number" id="rawWeight" step="0.01">
-  </label>
-
-  <label>Scrap Weight (kg):
-    <input type="number" id="scrapWeight" step="0.01">
-  </label>
-
-  <label>Section Weight:
-    <div class="unit-row">
-      <input type="number" id="sectionWeight" step="0.001">
-      <select id="sectionUnit">
-        <option value="ft">kg/ft</option>
-        <option value="m">kg/m</option>
-      </select>
+  <div class="container">
+    <div class="header">
+      <h2>💰 Steel Selling Price Calculator</h2>
+      <p>Calculate profitable selling prices for steel products</p>
     </div>
-  </label>
 
-  <label>Raw Material Length:
-    <div class="unit-row">
-      <input type="number" id="rawLength" step="0.01">
-      <select id="rawUnit">
-        <option value="ft">feet</option>
-        <option value="m">meters</option>
-      </select>
+    <div class="content">
+      <div class="calculator-section">
+        <div class="section-header">
+          <div class="section-title">
+            📊 Cost & Weight Information
+          </div>
+        </div>
+
+        <div class="form-container">
+          <div class="form-group">
+            <label class="form-label">
+              Raw Material Cost (₹/kg)
+              <span class="info-tooltip">
+                <span class="tooltip-text">Cost per kilogram of raw steel material</span>
+              </span>
+            </label>
+            <input type="number" id="rawCost" class="form-control" step="0.01" placeholder="Enter cost per kg">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Overhead Charges (₹)
+              <span class="info-tooltip">
+                <span class="tooltip-text">Total overhead costs including labor, utilities, etc.</span>
+              </span>
+            </label>
+            <input type="number" id="overhead" class="form-control" step="0.01" placeholder="Enter overhead charges">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Profit Margin (%)
+              <span class="info-tooltip">
+                <span class="tooltip-text">Desired profit percentage (optional)</span>
+              </span>
+            </label>
+            <input type="number" id="margin" class="form-control" step="0.01" placeholder="Enter profit margin (optional)">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Scrap Resale Price (₹/kg)
+              <span class="info-tooltip">
+                <span class="tooltip-text">Price you can sell scrap material for</span>
+              </span>
+            </label>
+            <input type="number" id="scrapPrice" class="form-control" step="0.01" placeholder="Enter scrap price per kg">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">📏 Weight Calculation Method</label>
+            <div style="margin-top: 10px;">
+              <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <input type="radio" name="weightMethod" value="direct" checked style="width: auto;">
+                <span>Direct Weight Input</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="radio" name="weightMethod" value="calculated" style="width: auto;">
+                <span>Calculate from Length & Section Weight</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Direct Weight Inputs -->
+          <div id="directWeightInputs">
+            <div class="form-group">
+              <label class="form-label">Raw Material Weight (kg)</label>
+              <input type="number" id="rawWeight" class="form-control" step="0.01" placeholder="Enter raw material weight">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Scrap Weight (kg)</label>
+              <input type="number" id="scrapWeight" class="form-control" step="0.01" placeholder="Enter scrap weight">
+            </div>
+          </div>
+
+          <!-- Calculated Weight Inputs -->
+          <div id="calculatedWeightInputs" style="display: none;">
+            <div class="form-group">
+              <label class="form-label">Section Weight</label>
+              <div class="unit-row">
+                <input type="number" id="sectionWeight" class="form-control" step="0.001" placeholder="Section weight">
+                <select id="sectionUnit" class="form-control">
+                  <option value="kg/ft">kg/ft</option>
+                  <option value="kg/m">kg/m</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Raw Material Length</label>
+              <div class="unit-row">
+                <input type="number" id="rawLength" class="form-control" step="0.01" placeholder="Raw material length">
+                <select id="rawUnit" class="form-control">
+                  <option value="ft">feet</option>
+                  <option value="m">meters</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Scrap Length</label>
+              <div class="unit-row">
+                <input type="number" id="scrapLength" class="form-control" step="0.01" placeholder="Scrap length">
+                <select id="scrapUnit" class="form-control">
+                  <option value="ft">feet</option>
+                  <option value="m">meters</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="calculate-btn" onclick="calculate()" id="calculateBtn">
+            🧮 Calculate Selling Price
+          </button>
+        </div>
+      </div>
+
+      <div class="error-message" id="errorMessage"></div>
+
+      <div class="results-section" id="resultsSection">
+        <div class="result-title">
+          💰 Calculation Results
+        </div>
+        
+        <div class="result-grid">
+          <div class="result-item">
+            <div class="result-label">Raw Material Weight</div>
+            <div class="result-value" id="resultRawWeight">0.00 kg</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Scrap Weight</div>
+            <div class="result-value" id="resultScrapWeight">0.00 kg</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Net Finished Weight</div>
+            <div class="result-value" id="resultNetWeight">0.00 kg</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Total Cost</div>
+            <div class="result-value" id="resultTotalCost">₹0.00</div>
+          </div>
+          <div class="result-item">
+            <div class="result-label">Base Price/kg</div>
+            <div class="result-value" id="resultBasePrice">₹0.00</div>
+          </div>
+        </div>
+
+        <div class="final-price">
+          <div class="result-label">Final Selling Price per kg</div>
+          <div class="result-value" id="resultFinalPrice">₹0.00</div>
+        </div>
+      </div>
     </div>
-  </label>
-
-  <label>Scrap Length:
-    <div class="unit-row">
-      <input type="number" id="scrapLength" step="0.01">
-      <select id="scrapUnit">
-        <option value="ft">feet</option>
-        <option value="m">meters</option>
-      </select>
-    </div>
-  </label>
-
-  <label>Scrap Resale Price (₹/kg):
-    <input type="number" id="scrapPrice" step="0.01">
-  </label>
-
-  <label>Overhead Charges (₹):
-    <input type="number" id="overhead" step="0.01">
-  </label>
-
-  <label>Profit Margin (%):
-    <input type="number" id="margin" step="0.01" placeholder="Optional">
-  </label>
-
-  <button onclick="calculate()">CALCULATE</button>
-
-  <div class="output" id="result"></div>
+  </div>
 
   <script>
+    // Weight calculation method toggle
+    document.querySelectorAll('input[name="weightMethod"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const directInputs = document.getElementById('directWeightInputs');
+        const calculatedInputs = document.getElementById('calculatedWeightInputs');
+        
+        if (this.value === 'direct') {
+          directInputs.style.display = 'block';
+          calculatedInputs.style.display = 'none';
+        } else {
+          directInputs.style.display = 'none';
+          calculatedInputs.style.display = 'block';
+        }
+        
+        clearResults();
+      });
+    });
+
+    // Real-time validation
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', validateInputs);
+    });
+
+    function validateInputs() {
+      const calculateBtn = document.getElementById('calculateBtn');
+      const weightMethod = document.querySelector('input[name="weightMethod"]:checked').value;
+      
+      let isValid = true;
+      const requiredFields = ['rawCost', 'overhead', 'scrapPrice'];
+      
+      // Check required fields
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value || parseFloat(field.value) < 0) {
+          isValid = false;
+        }
+      });
+      
+      // Check weight inputs based on method
+      if (weightMethod === 'direct') {
+        const rawWeight = parseFloat(document.getElementById('rawWeight').value);
+        const scrapWeight = parseFloat(document.getElementById('scrapWeight').value);
+        
+        if (isNaN(rawWeight) || rawWeight <= 0 || isNaN(scrapWeight) || scrapWeight < 0 || scrapWeight >= rawWeight) {
+          isValid = false;
+        }
+      } else {
+        const sectionWeight = parseFloat(document.getElementById('sectionWeight').value);
+        const rawLength = parseFloat(document.getElementById('rawLength').value);
+        const scrapLength = parseFloat(document.getElementById('scrapLength').value);
+        
+        if (isNaN(sectionWeight) || sectionWeight <= 0 || 
+            isNaN(rawLength) || rawLength <= 0 || 
+            isNaN(scrapLength) || scrapLength < 0 || scrapLength >= rawLength) {
+          isValid = false;
+        }
+      }
+      
+      calculateBtn.disabled = !isValid;
+    }
+
+    function clearResults() {
+      document.getElementById('resultsSection').classList.remove('show');
+      document.getElementById('errorMessage').classList.remove('show');
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.classList.add('show');
+      document.getElementById('resultsSection').classList.remove('show');
+    }
+
     function toFeet(length, unit) {
       if (unit === 'm') {
-        return length * 3.28084; // meters to feet
+        return length * 3.28084;
       }
-      return length; // already in feet
+      return length;
     }
 
     function toKgPerFt(weight, unit) {
-      if (unit === 'm') {
-        return weight / 3.28084; // kg/m to kg/ft
+      if (unit === 'kg/m') {
+        return weight / 3.28084;
       }
-      return weight; // already kg/ft
+      return weight;
     }
 
     function calculate() {
+      // Clear previous results
+      clearResults();
+      
+      // Get basic inputs
       const rawCost = parseFloat(document.getElementById('rawCost').value);
       const scrapPrice = parseFloat(document.getElementById('scrapPrice').value);
       const overhead = parseFloat(document.getElementById('overhead').value);
       const margin = parseFloat(document.getElementById('margin').value) || 0;
-
-      let rawWeight = parseFloat(document.getElementById('rawWeight').value);
-      let scrapWeight = parseFloat(document.getElementById('scrapWeight').value);
-
-      // lengths & section weight
-      const sectionVal = parseFloat(document.getElementById('sectionWeight').value);
-      const sectionUnit = document.getElementById('sectionUnit').value;
-
-      const rawLengthVal = parseFloat(document.getElementById('rawLength').value);
-      const rawUnit = document.getElementById('rawUnit').value;
-
-      const scrapLengthVal = parseFloat(document.getElementById('scrapLength').value);
-      const scrapUnit = document.getElementById('scrapUnit').value;
-
-      if (isNaN(rawCost) || isNaN(scrapPrice) || isNaN(overhead)) {
-        document.getElementById('result').innerHTML = "<strong>Please fill all required fields (costs/overhead).</strong>";
-        return;
-      }
-
-      // If section weight & length provided, override
-      if (!isNaN(sectionVal) && !isNaN(rawLengthVal)) {
+      const weightMethod = document.querySelector('input[name="weightMethod"]:checked').value;
+      
+      let rawWeight, scrapWeight;
+      
+      // Calculate weights based on method
+      if (weightMethod === 'direct') {
+        rawWeight = parseFloat(document.getElementById('rawWeight').value);
+        scrapWeight = parseFloat(document.getElementById('scrapWeight').value);
+      } else {
+        const sectionVal = parseFloat(document.getElementById('sectionWeight').value);
+        const sectionUnit = document.getElementById('sectionUnit').value;
+        const rawLengthVal = parseFloat(document.getElementById('rawLength').value);
+        const rawUnit = document.getElementById('rawUnit').value;
+        const scrapLengthVal = parseFloat(document.getElementById('scrapLength').value);
+        const scrapUnit = document.getElementById('scrapUnit').value;
+        
         const sectionWKgFt = toKgPerFt(sectionVal, sectionUnit);
         const rawLenFt = toFeet(rawLengthVal, rawUnit);
-        rawWeight = sectionWKgFt * rawLenFt;
-      }
-      if (!isNaN(sectionVal) && !isNaN(scrapLengthVal)) {
-        const sectionWKgFt = toKgPerFt(sectionVal, sectionUnit);
         const scrapLenFt = toFeet(scrapLengthVal, scrapUnit);
+        
+        rawWeight = sectionWKgFt * rawLenFt;
         scrapWeight = sectionWKgFt * scrapLenFt;
       }
-
-      if (isNaN(rawWeight) || isNaN(scrapWeight)) {
-        document.getElementById('result').innerHTML = "<strong>Please provide either weights or lengths (with section weight).</strong>";
+      
+      // Validation
+      if (isNaN(rawCost) || rawCost <= 0) {
+        showError('❌ Please enter a valid raw material cost (must be greater than 0)');
         return;
       }
-
+      
+      if (isNaN(overhead) || overhead < 0) {
+        showError('❌ Please enter a valid overhead amount (must be 0 or greater)');
+        return;
+      }
+      
+      if (isNaN(scrapPrice) || scrapPrice < 0) {
+        showError('❌ Please enter a valid scrap price (must be 0 or greater)');
+        return;
+      }
+      
+      if (isNaN(rawWeight) || rawWeight <= 0) {
+        showError('❌ Please enter valid weight/length values');
+        return;
+      }
+      
+      if (isNaN(scrapWeight) || scrapWeight < 0) {
+        showError('❌ Scrap weight cannot be negative');
+        return;
+      }
+      
+      if (scrapWeight >= rawWeight) {
+        showError('❌ Scrap weight cannot be greater than or equal to raw weight');
+        return;
+      }
+      
+      // Calculate results
       const netWeight = rawWeight - scrapWeight;
       const rawCostTotal = rawCost * rawWeight;
       const scrapValue = scrapWeight * scrapPrice;
       const totalCost = rawCostTotal - scrapValue + overhead;
       const basePricePerKg = totalCost / netWeight;
       const finalPricePerKg = basePricePerKg * (1 + margin / 100);
-
-      document.getElementById('result').innerHTML = `
-        <strong>Results:</strong><br>
-        Raw Material Weight: <strong>${rawWeight.toFixed(2)} kg</strong><br>
-        Scrap Weight: <strong>${scrapWeight.toFixed(2)} kg</strong><br>
-        Net Finished Weight: <strong>${netWeight.toFixed(2)} kg</strong><br>
-        Total Cost: <strong>₹${totalCost.toFixed(2)}</strong><br>
-        Base Selling Price/kg: <strong>₹${basePricePerKg.toFixed(2)}</strong><br>
-        Final Selling Price/kg (with ${margin}% margin): <strong>₹${finalPricePerKg.toFixed(2)}</strong>
-      `;
+      
+      // Display results
+      document.getElementById('resultRawWeight').textContent = `${rawWeight.toFixed(2)} kg`;
+      document.getElementById('resultScrapWeight').textContent = `${scrapWeight.toFixed(2)} kg`;
+      document.getElementById('resultNetWeight').textContent = `${netWeight.toFixed(2)} kg`;
+      document.getElementById('resultTotalCost').textContent = `₹${totalCost.toFixed(2)}`;
+      document.getElementById('resultBasePrice').textContent = `₹${basePricePerKg.toFixed(2)}`;
+      document.getElementById('resultFinalPrice').textContent = `₹${finalPricePerKg.toFixed(2)}`;
+      
+      // Show results
+      document.getElementById('resultsSection').classList.add('show');
     }
-  </script>
 
+    // Initialize
+    validateInputs();
+  </script>
 </body>
 </html>
