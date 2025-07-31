@@ -516,10 +516,11 @@
       headerRegex: "(\\d{2}-\\d{2}-\\d{4})\\s*\\|\\s*(\\d{2}:\\d{2}(?:AM|PM))",
       startMarker: "〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️",
       endMarker: "〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️",
-      spellingCorrections: {
-        "Kolkatta": "Kolkata",
-        "Ahemdabad": "Ahmedabad"
-      },
+             spellingCorrections: {
+         "Kolkatta ": "Kolkata ",
+         "Ahemdabad ": "Ahmedabad ",
+         "Mujfernagar ": "Muzaffarnagar "
+       },
       footerNote: `📝Note
 ✅All Prices are Spot &  Quoted in Market & PMT
 ✅++ All Taxes Extra
@@ -624,8 +625,14 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
              let cleaned = line;
              // Apply spelling corrections with word boundaries
              Object.entries(spellingCorrections).forEach(([wrong, correct]) => {
-               const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
-               cleaned = cleaned.replace(regex, correct);
+               // For corrections with trailing spaces, use exact match
+               if (wrong.endsWith(' ')) {
+                 const regex = new RegExp(wrong.replace(/\s+$/, '\\s+'), 'gi');
+                 cleaned = cleaned.replace(regex, correct);
+               } else {
+                 const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                 cleaned = cleaned.replace(regex, correct);
+               }
              });
              return cleaned;
            });
@@ -654,7 +661,9 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
         // Add header
         if (header) {
           output.push(header.date);
-          output.push(`⏰${header.time}`);
+          // Add space before AM/PM if not present
+          const formattedTime = header.time.replace(/(AM|PM)$/, ' $1');
+          output.push(`⏰${formattedTime}`);
           output.push('');
           output.push(presets.startMarker);
           output.push('');
@@ -665,8 +674,13 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
           if (/==SCRAP PRICE UPDATES==/i.test(line)) {
             output.push(presets.endMarker);
             output.push('');
+            output.push(''); // Extra spacing
           }
           output.push(line);
+          // Add extra line after headings
+          if (/^===.*===$/.test(line)) {
+            output.push('');
+          }
         }
         
         // Add end marker and promotional content
