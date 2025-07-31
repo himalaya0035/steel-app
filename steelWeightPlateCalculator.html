@@ -5,191 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Steel Plate Weight Calculator</title>
     <style>
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: #f0f2f5;
-        padding: 20px;
-        color: #333;
-      }
-
-      h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #222;
-      }
-
-      #captureArea {
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        max-width: 100%;
-        overflow-x: auto;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background: #fff;
-        min-width: 800px;
-      }
-
-      th,
-      td {
-        border: 1px solid #e0e0e0;
-        padding: 10px;
-        text-align: center;
-        vertical-align: middle;
-      }
-
-      th {
-        background-color: #f7f7f7;
-        font-weight: 600;
-        color: #444;
-      }
-
-      input,
-      select {
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-      }
-
-      button {
-        margin: 5px;
-        padding: 10px 18px;
-        background: #007bff;
-        color: white;
-        border: none;
-        font-weight: 500;
-        font-size: 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background 0.2s ease;
-      }
-
-      button:hover {
-        background: #0056b3;
-      }
-
-      .result {
-        margin-top: 20px;
-        font-size: 1.2em;
-        font-weight: 600;
-        color: #2d6a4f;
-        text-align: center;
-      }
-
-      #detailsBlock {
-        margin-top: 20px;
-        padding: 15px;
-        background: #e8f0fe;
-        border-left: 4px solid #007bff;
-        border-radius: 6px;
-        font-family: monospace;
-        white-space: pre-line;
-        font-size: 14px;
-      }
-
-      /* Mobile View: Cards instead of table */
-      @media (max-width: 768px) {
-        table,
-        thead,
-        tbody,
-        th,
-        td,
-        tr {
-          display: block;
-        }
-
-        thead {
-          display: none;
-        }
-
-        tr {
-          margin-bottom: 15px;
-          background: #fff;
-          border-radius: 8px;
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-          padding: 12px;
-        }
-
-        td {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 8px 12px;
-          border: none;
-          border-bottom: 1px solid #eee;
-        }
-
-        td:last-child {
-          border-bottom: none;
-        }
-
-        td::before {
-          content: attr(data-label);
-          font-weight: 600;
-          flex: 1;
-          text-align: left;
-          padding-right: 10px;
-          color: #555;
-        }
-
-        td > * {
-          flex: 2;
-          max-width: 60%;
-        }
-
-        input,
-        select {
-          font-size: 13px;
-        }
-
-        button {
-          width: 100%;
-          padding: 12px;
-          font-size: 14px;
-        }
-
-        .action-buttons {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        #captureArea {
-          padding: 15px;
-        }
-
-        .result {
-          font-size: 1.1em;
-        }
-
-        #detailsBlock {
-          font-size: 13px;
-          word-break: break-word;
-        }
-      }
-
-      /* Optional enhancements */
-      .unit,
-      .len_m,
-      .len_mm,
-      .len_ft,
-      .len_in,
-      .wid_m,
-      .wid_mm,
-      .wid_ft,
-      .wid_in,
-      .thickness_mm,
-      .pieces {
-        margin-bottom: 5px;
-      }
       * {
         box-sizing: border-box;
         margin: 0;
@@ -197,361 +12,697 @@
       }
 
       body {
-        font-family: Arial, sans-serif;
-        background: #f6f8fa;
-        padding: 16px;
-        color: #333;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #2d3748;
+        line-height: 1.6;
       }
 
       .container {
-        max-width: 1000px;
-        margin: auto;
-        background: #fff;
-        padding: 16px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
       }
 
-      h2 {
+      .header {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        padding: 30px 20px;
         text-align: center;
-        margin-bottom: 20px;
-        font-size: 1.5rem;
-        color: #222;
       }
 
-      .card {
-        background: #fafafa;
-        padding: 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        overflow-x: auto;
+      .header h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
       }
 
-      .card.secondary {
-        background: #f0f4f8;
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
       }
 
-      .table-responsive {
-        width: 100%;
-        overflow-x: auto;
+      .content {
+        padding: 30px;
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 600px;
+      .calculator-section {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-bottom: 30px;
       }
 
-      thead {
-        background: #e0e7ef;
+      .section-header {
+        background: #f8fafc;
+        padding: 20px 30px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
-      th,
-      td {
-        padding: 12px 8px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a202c;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
-      th {
-        font-weight: bold;
+      .add-row-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         font-size: 0.95rem;
       }
 
-      td input {
-        width: 80px;
-        padding: 6px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
+      .add-row-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
       }
 
-      .result {
-        font-weight: bold;
-        font-size: 1rem;
-        margin-top: 10px;
-        color: #2e7d32;
+      .table-container {
+        overflow-x: auto;
+        padding: 20px;
       }
 
-      .button-group {
+      .dimension-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .dimension-table thead {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      }
+
+      .dimension-table th {
+        padding: 16px 12px;
+        text-align: center;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dimension-table td {
+        padding: 16px 12px;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+      }
+
+      .dimension-table tr:hover {
+        background: #f8fafc;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+        color: #374151;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      select.form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+      }
+
+      .unit-inputs {
         display: flex;
+        gap: 8px;
         flex-wrap: wrap;
+      }
+
+      .unit-inputs input {
+        flex: 1;
+        min-width: 80px;
+      }
+
+      .weight-display {
+        font-weight: 600;
+        color: #059669;
+        font-size: 1rem;
+        padding: 8px 12px;
+        background: #f0fdf4;
+        border-radius: 8px;
+        border: 1px solid #bbf7d0;
+      }
+
+      .remove-btn {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .remove-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+      }
+
+      .results-section {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        border: 1px solid #bbf7d0;
+        border-radius: 16px;
+        padding: 25px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .total-weight {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #059669;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
         justify-content: center;
         gap: 12px;
       }
 
-      .button-group button {
-        padding: 10px 16px;
-        border: none;
-        border-radius: 5px;
-        background-color: #1976d2;
-        color: #fff;
-        cursor: pointer;
-        font-size: 0.95rem;
-        transition: background-color 0.3s;
+      .details-block {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #374151;
+        white-space: pre-line;
+        max-height: 300px;
+        overflow-y: auto;
       }
 
-      .button-group button:hover {
-        background-color: #0d47a1;
+      .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 30px;
+      }
+
+      .action-btn {
+        padding: 16px 24px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: white;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-calculate {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      }
+
+      .btn-download-image {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+
+      .btn-download-pdf {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       }
 
       @media (max-width: 768px) {
-        th,
-        td {
-          font-size: 0.85rem;
-          padding: 8px 6px;
+        body {
+          padding: 10px;
         }
 
-        td input {
-          width: 100%;
+        .container {
+          border-radius: 16px;
         }
 
-        table {
-          min-width: unset;
+        .header {
+          padding: 25px 15px;
         }
 
-        .card {
-          padding: 12px;
+        .header h2 {
+          font-size: 1.8rem;
         }
 
-        h2 {
-          font-size: 1.3rem;
+        .content {
+          padding: 20px;
         }
 
-        .button-group {
+        .section-header {
+          padding: 15px 20px;
           flex-direction: column;
-          gap: 10px;
+          gap: 15px;
+          align-items: stretch;
         }
 
-        .button-group button {
+        .add-row-btn {
           width: 100%;
+          justify-content: center;
         }
 
-        .result {
+        .table-container {
+          padding: 15px;
+        }
+
+        .dimension-table,
+        .dimension-table thead,
+        .dimension-table tbody,
+        .dimension-table th,
+        .dimension-table td,
+        .dimension-table tr {
+          display: block;
+        }
+
+        .dimension-table thead {
+          display: none;
+        }
+
+        .dimension-table tr {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+          margin-bottom: 20px;
+          padding: 20px;
+          border: 1px solid #e2e8f0;
+        }
+
+        .dimension-table td {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          border: none;
+          border-bottom: 1px solid #f1f5f9;
+          text-align: left;
+        }
+
+        .dimension-table td:last-child {
+          border-bottom: none;
+          justify-content: center;
+          padding-top: 20px;
+        }
+
+        .dimension-table td::before {
+          content: attr(data-label);
+          font-weight: 600;
+          color: #374151;
+          min-width: 100px;
+          margin-right: 15px;
+        }
+
+        .dimension-table td > * {
+          flex: 1;
+          max-width: 60%;
+        }
+
+        .unit-inputs {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .form-control {
+          font-size: 16px;
+          padding: 14px 16px;
+        }
+
+        .weight-display {
           text-align: center;
+          width: 100%;
+          max-width: none;
+        }
+
+        .remove-btn {
+          width: 100%;
+          justify-content: center;
+          padding: 14px;
+        }
+
+        .total-weight {
+          font-size: 1.5rem;
+        }
+
+        .action-buttons {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .action-btn {
+          padding: 18px 20px;
+          font-size: 1.1rem;
+        }
+
+        .details-block {
+          font-size: 0.85rem;
+          padding: 15px;
+          max-height: 200px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header h2 {
+          font-size: 1.5rem;
+        }
+
+        .dimension-table td::before {
+          min-width: 80px;
+          font-size: 0.9rem;
+        }
+
+        .dimension-table td > * {
+          max-width: 50%;
+        }
+
+        .form-control {
+          font-size: 16px;
+          padding: 12px 14px;
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h2>🧮 Steel Plate Weight Calculator</h2>
-
-      <div id="captureArea" class="card">
-        <div class="table-responsive">
-          <table id="dimensionTable">
-            <thead>
-              <tr>
-                <th>Unit</th>
-                <th>Length</th>
-                <th>Width</th>
-                <th>Thickness (mm)</th>
-                <th>Pieces</th>
-                <th>Weight (kg)</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-        <div class="result" id="result">✅ Total Weight: 0.00 kg</div>
-
-        <div id="detailsBlock" class="card secondary">
-          <!-- Will fill with detailed description -->
-        </div>
+      <div class="header">
+        <h2>🧮 Steel Plate Weight Calculator</h2>
+        <p>Calculate the weight of steel plates with precision</p>
       </div>
 
-      <div class="button-group">
-        <button onclick="addRow()">➕ Add Row</button>
-        <button onclick="calculateTotal()">✅ Calculate</button>
-        <button onclick="downloadAsImage()">📸 Download Image</button>
-        <button onclick="downloadAsPDF()">📄 Download PDF</button>
+      <div class="content">
+        <div class="calculator-section">
+          <div class="section-header">
+            <div class="section-title">
+              📏 Dimensions & Calculations
+            </div>
+            <button class="add-row-btn" onclick="addRow()">
+              ➕ Add New Plate
+            </button>
+          </div>
+
+          <div class="table-container">
+            <table class="dimension-table" id="dimensionTable">
+              <thead>
+                <tr>
+                  <th>Unit</th>
+                  <th>Length</th>
+                  <th>Width</th>
+                  <th>Thickness (mm)</th>
+                  <th>Quantity</th>
+                  <th>Weight (kg)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="results-section">
+          <div class="total-weight" id="result">Total Weight: 0.00 kg</div>
+        </div>
+
+        <div class="details-block" id="detailsBlock">
+          <!-- Detailed results will appear here -->
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn btn-calculate" onclick="calculateTotal()">
+            ✅ Calculate Total
+          </button>
+          <button class="action-btn btn-download-image" onclick="downloadAsImage()">
+            📸 Download Image
+          </button>
+          <button class="action-btn btn-download-pdf" onclick="downloadAsPDF()">
+            📄 Download PDF
+          </button>
+        </div>
       </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
+      console.info("hello")
       function addRow() {
         const tbody = document.querySelector("#dimensionTable tbody");
         const row = document.createElement("tr");
+        
         row.innerHTML = `
-    <td>
-      <select class="unit">
-        <option value="m">Meters</option>
-        <option value="mm">Millimeters</option>
-        <option value="ft">Feet & Inches</option>
-      </select>
-    </td>
-    <td>
-      <div class="m-inputs">
-        <input type="number" step="0.01" class="len_m" placeholder="Length m">
-      </div>
-      <div class="mm-inputs" style="display:none;">
-        <input type="number" step="0.1" class="len_mm" placeholder="Length mm">
-      </div>
-      <div class="ft-inputs" style="display:none;">
-        <input type="number" step="0.01" class="len_ft" placeholder="ft">
-        <input type="number" step="0.01" class="len_in" placeholder="in">
-      </div>
-    </td>
-    <td>
-      <div class="m-inputs">
-        <input type="number" step="0.01" class="wid_m" placeholder="Width m">
-      </div>
-      <div class="mm-inputs" style="display:none;">
-        <input type="number" step="0.1" class="wid_mm" placeholder="Width mm">
-      </div>
-      <div class="ft-inputs" style="display:none;">
-        <input type="number" step="0.01" class="wid_ft" placeholder="ft">
-        <input type="number" step="0.01" class="wid_in" placeholder="in">
-      </div>
-    </td>
-    <td>
-      <input type="number" step="0.1" class="thickness_mm" placeholder="Thickness mm">
-    </td>
-    <td>
-      <input type="number" step="1" class="pieces" placeholder="Qty">
-    </td>
-    <td>
-      <span class="weightCell">0.00</span>
-    </td>
-    <td>
-      <button onclick="this.closest('tr').remove(); calculateTotal();">🗑 Remove</button>
-    </td>
-  `;
+          <td data-label="Unit">
+            <select class="form-control unit">
+              <option value="m">Meters</option>
+              <option value="mm">Millimeters</option>
+              <option value="ft">Feet & Inches</option>
+            </select>
+          </td>
+          <td data-label="Length">
+            <div class="m-inputs">
+              <input type="number" step="0.01" class="form-control len_m" placeholder="Length (m)">
+            </div>
+            <div class="mm-inputs" style="display:none;">
+              <input type="number" step="0.1" class="form-control len_mm" placeholder="Length (mm)">
+            </div>
+            <div class="ft-inputs" style="display:none;">
+              <div class="unit-inputs">
+                <input type="number" step="0.01" class="form-control len_ft" placeholder="ft">
+                <input type="number" step="0.01" class="form-control len_in" placeholder="in">
+              </div>
+            </div>
+          </td>
+          <td data-label="Width">
+            <div class="m-inputs">
+              <input type="number" step="0.01" class="form-control wid_m" placeholder="Width (m)">
+            </div>
+            <div class="mm-inputs" style="display:none;">
+              <input type="number" step="0.1" class="form-control wid_mm" placeholder="Width (mm)">
+            </div>
+            <div class="ft-inputs" style="display:none;">
+              <div class="unit-inputs">
+                <input type="number" step="0.01" class="form-control wid_ft" placeholder="ft">
+                <input type="number" step="0.01" class="form-control wid_in" placeholder="in">
+              </div>
+            </div>
+          </td>
+          <td data-label="Thickness">
+            <input type="number" step="0.1" class="form-control thickness_mm" placeholder="Thickness (mm)">
+          </td>
+          <td data-label="Quantity">
+            <input type="number" step="1" class="form-control pieces" placeholder="Qty">
+          </td>
+          <td data-label="Weight">
+            <div class="weight-display">0.00</div>
+          </td>
+          <td data-label="Action">
+            <button class="remove-btn" onclick="removeRow(this)">
+              🗑️ Remove
+            </button>
+          </td>
+        `;
+        
         tbody.appendChild(row);
 
-        row.querySelector(".unit").addEventListener("change", function () {
-          const unit = this.value;
-          row
-            .querySelectorAll(".m-inputs")
-            .forEach(
-              (el) => (el.style.display = unit === "m" ? "block" : "none")
-            );
-          row
-            .querySelectorAll(".mm-inputs")
-            .forEach(
-              (el) => (el.style.display = unit === "mm" ? "block" : "none")
-            );
-          row
-            .querySelectorAll(".ft-inputs")
-            .forEach(
-              (el) => (el.style.display = unit === "ft" ? "block" : "none")
-            );
+        const unitSelect = row.querySelector(".unit");
+        unitSelect.addEventListener("change", function() {
+          toggleUnitInputs(this);
+        });
+
+        const inputs = row.querySelectorAll('input');
+        inputs.forEach(input => {
+          input.addEventListener('input', calculateTotal);
         });
       }
 
-      // Add one initial row
-      addRow();
+      function toggleUnitInputs(selectElement) {
+        const row = selectElement.closest('tr');
+        const unit = selectElement.value;
+        
+        row.querySelectorAll('.m-inputs, .mm-inputs, .ft-inputs').forEach(el => {
+          el.style.display = 'none';
+        });
+        
+        if (unit === 'm') {
+          row.querySelectorAll('.m-inputs').forEach(el => el.style.display = 'block');
+        } else if (unit === 'mm') {
+          row.querySelectorAll('.mm-inputs').forEach(el => el.style.display = 'block');
+        } else if (unit === 'ft') {
+          row.querySelectorAll('.ft-inputs').forEach(el => el.style.display = 'block');
+        }
+        
+        calculateTotal();
+      }
+
+      function removeRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        calculateTotal();
+      }
 
       function calculateTotal() {
-        const density = 7850; // kg/m3
+        const density = 7850;
         let totalWeight = 0;
-        let description = "📌 *Detailed Results:*\n";
+        let description = "📊 Detailed Calculation Results:\n\n";
 
-        document
-          .querySelectorAll("#dimensionTable tbody tr")
-          .forEach((row, i) => {
-            const unit = row.querySelector(".unit").value;
-            let length_m = 0;
-            let width_m = 0;
-            const thickness_mm =
-              parseFloat(row.querySelector(".thickness_mm").value) || 0;
-            const pieces = parseInt(row.querySelector(".pieces").value) || 0;
-            let lenDisplay = "";
-            let widDisplay = "";
+        document.querySelectorAll("#dimensionTable tbody tr").forEach((row, i) => {
+          const unit = row.querySelector(".unit").value;
+          let length_m = 0;
+          let width_m = 0;
+          const thickness_mm = parseFloat(row.querySelector(".thickness_mm").value) || 0;
+          const pieces = parseInt(row.querySelector(".pieces").value) || 0;
+          let lenDisplay = "";
+          let widDisplay = "";
 
-            if (unit === "m") {
-              const l = parseFloat(row.querySelector(".len_m").value) || 0;
-              const w = parseFloat(row.querySelector(".wid_m").value) || 0;
-              length_m = l;
-              width_m = w;
-              lenDisplay = `${l} m`;
-              widDisplay = `${w} m`;
-            } else if (unit === "mm") {
-              const l = parseFloat(row.querySelector(".len_mm").value) || 0;
-              const w = parseFloat(row.querySelector(".wid_mm").value) || 0;
-              length_m = l / 1000;
-              width_m = w / 1000;
-              lenDisplay = `${l} mm`;
-              widDisplay = `${w} mm`;
-            } else if (unit === "ft") {
-              const lf = parseFloat(row.querySelector(".len_ft").value) || 0;
-              const li = parseFloat(row.querySelector(".len_in").value) || 0;
-              const wf = parseFloat(row.querySelector(".wid_ft").value) || 0;
-              const wi = parseFloat(row.querySelector(".wid_in").value) || 0;
-              length_m = (lf * 12 + li) * 0.0254;
-              width_m = (wf * 12 + wi) * 0.0254;
-              lenDisplay = `${lf} ft ${li} in`;
-              widDisplay = `${wf} ft ${wi} in`;
-            }
+          if (unit === "m") {
+            const l = parseFloat(row.querySelector(".len_m").value) || 0;
+            const w = parseFloat(row.querySelector(".wid_m").value) || 0;
+            length_m = l;
+            width_m = w;
+            lenDisplay = `${l} m`;
+            widDisplay = `${w} m`;
+          } else if (unit === "mm") {
+            const l = parseFloat(row.querySelector(".len_mm").value) || 0;
+            const w = parseFloat(row.querySelector(".wid_mm").value) || 0;
+            length_m = l / 1000;
+            width_m = w / 1000;
+            lenDisplay = `${l} mm`;
+            widDisplay = `${w} mm`;
+          } else if (unit === "ft") {
+            const lf = parseFloat(row.querySelector(".len_ft").value) || 0;
+            const li = parseFloat(row.querySelector(".len_in").value) || 0;
+            const wf = parseFloat(row.querySelector(".wid_ft").value) || 0;
+            const wi = parseFloat(row.querySelector(".wid_in").value) || 0;
+            length_m = (lf * 12 + li) * 0.0254;
+            width_m = (wf * 12 + wi) * 0.0254;
+            lenDisplay = `${lf} ft ${li} in`;
+            widDisplay = `${wf} ft ${wi} in`;
+          }
 
-            const thickness_m = thickness_mm / 1000;
-            let weightEach = 0;
-            if (length_m > 0 && width_m > 0 && thickness_m > 0 && pieces > 0) {
-              const volume = length_m * width_m * thickness_m;
-              weightEach = volume * density;
-              totalWeight += weightEach * pieces;
+          const thickness_m = thickness_mm / 1000;
+          let weightEach = 0;
+          
+          if (length_m > 0 && width_m > 0 && thickness_m > 0 && pieces > 0) {
+            const volume = length_m * width_m * thickness_m;
+            weightEach = volume * density;
+            totalWeight += weightEach * pieces;
 
-              description += `Row ${
-                i + 1
-              }: ${lenDisplay} × ${widDisplay} × ${thickness_mm} mm × ${pieces} pcs = ${(
-                weightEach * pieces
-              ).toFixed(2)} kg\n`;
-            } else {
-              description += `Row ${i + 1}: incomplete data\n`;
-            }
-            row.querySelector(".weightCell").innerText = (
-              weightEach * pieces
-            ).toFixed(2);
-          });
+            description += `🔸 Plate ${i + 1}: ${lenDisplay} × ${widDisplay} × ${thickness_mm} mm × ${pieces} pcs = ${(weightEach * pieces).toFixed(2)} kg\n`;
+          } else {
+            description += `🔸 Plate ${i + 1}: Incomplete data\n`;
+          }
+          
+          row.querySelector(".weight-display").innerText = (weightEach * pieces).toFixed(2);
+        });
 
-        description += `✅ Total Weight: ${totalWeight.toFixed(2)} kg`;
-        document.getElementById(
-          "result"
-        ).innerText = `✅ Total Weight: ${totalWeight.toFixed(2)} kg`;
+        description += `\n✅ Total Weight: ${totalWeight.toFixed(2)} kg`;
+        
+        document.getElementById("result").innerText = `Total Weight: ${totalWeight.toFixed(2)} kg`;
         document.getElementById("detailsBlock").innerText = description;
       }
 
       function downloadAsImage() {
-        html2canvas(document.querySelector("#captureArea"), { scale: 2 }).then(
-          (canvas) => {
-            const link = document.createElement("a");
-            link.download = "steel_weight_results.png";
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-          }
-        );
+        const captureArea = document.querySelector(".calculator-section");
+        
+        html2canvas(captureArea, { 
+          scale: 2,
+          backgroundColor: '#ffffff',
+          useCORS: true
+        }).then((canvas) => {
+          const link = document.createElement("a");
+          link.download = `steel_weight_calculation_${new Date().toISOString().split('T')[0]}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        });
       }
 
       async function downloadAsPDF() {
         const { jsPDF } = window.jspdf;
-        const canvas = await html2canvas(
-          document.querySelector("#captureArea"),
-          { scale: 2 }
-        );
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
+        const captureArea = document.querySelector(".calculator-section");
+        
+        try {
+          const canvas = await html2canvas(captureArea, { 
+            scale: 2,
+            backgroundColor: '#ffffff',
+            useCORS: true
+          });
+          
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "mm", "a4");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const imgWidth = pageWidth - 20;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          
+          let heightLeft = imgHeight;
+          let position = 10;
 
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+          pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+          heightLeft -= (pageHeight - 20);
 
-        while (heightLeft > 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+          while (heightLeft > 0) {
+            position = heightLeft - imgHeight + 10;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= (pageHeight - 20);
+          }
+
+          pdf.save(`steel_weight_calculation_${new Date().toISOString().split('T')[0]}.pdf`);
+        } catch (error) {
+          console.error('Error generating PDF:', error);
+          alert('Error generating PDF. Please try again.');
         }
-
-        pdf.save("steel_weight_results.pdf");
       }
+
+      addRow();
+      calculateTotal();
     </script>
   </body>
 </html>
+
