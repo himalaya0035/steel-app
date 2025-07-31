@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Steel Message Transformer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #2d3748;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .section-header {
+      background: #f8fafc;
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a202c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-content {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: white;
+      color: #374151;
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .presets-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+    }
+
+    .presets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(79, 70, 229, 0.1);
+      color: #4f46e5;
+      border: 2px solid #4f46e5;
+    }
+
+    .btn-secondary:hover {
+      background: #4f46e5;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #0088cc 0%, #005580 100%);
+      color: white;
+    }
+
+    .btn-telegram:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3);
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .output-section {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .output-content {
+      padding: 20px;
+    }
+
+    .output-text {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 300px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.error {
+      background: #ef4444;
+    }
+
+    .collapsible {
+      cursor: pointer;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .collapsible-content.show {
+      max-height: 1000px;
+    }
+
+    .toggle-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .collapsible.active .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        border-radius: 16px;
+      }
+
+      .header {
+        padding: 25px 15px;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .presets-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+             .btn {
+         width: 100%;
+         justify-content: center;
+       }
+
+       .output-actions {
+         flex-direction: column;
+         gap: 8px;
+       }
+
+       .section-header {
+         flex-direction: column;
+         gap: 15px;
+         align-items: stretch;
+       }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .form-control {
+        font-size: 16px;
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔁 Steel Message Transformer</h1>
+      <p>Transform steel price messages with custom formatting and rules</p>
+    </div>
+
+    <div class="content">
+      <!-- Main Input/Output Grid -->
+      <div class="main-grid">
+        <!-- Input Section -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              📥 Input Message
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="form-group">
+              <label class="form-label">Raw Message</label>
+              <textarea 
+                id="inputMessage" 
+                class="form-control" 
+                placeholder="Paste your raw steel price message here..."
+                oninput="autoTransform()"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+                          <!-- Output Section -->
+         <div class="section">
+           <div class="section-header">
+             <div class="section-title">
+               📤 Transformed Output
+             </div>
+           </div>
+           <div class="section-content">
+             <div id="outputMessage" class="output-text">
+               Transformed output will appear here...
+             </div>
+             <div class="output-actions">
+               <button class="btn btn-success" onclick="copyOutput()">
+                 📋 Copy
+               </button>
+               <button class="btn btn-whatsapp" onclick="shareToWhatsApp()">
+                 📱 WhatsApp
+               </button>
+               <button class="btn btn-telegram" onclick="shareToTelegram()">
+                 📬 Telegram
+               </button>
+             </div>
+           </div>
+         </div>
+      </div>
+
+      <!-- Presets Section -->
+      <div class="presets-section">
+        <div class="section-header collapsible" onclick="toggleCollapsible(this)">
+          <div class="section-title">
+            ⚙️ Transformation Settings
+            <span class="toggle-icon">▼</span>
+          </div>
+        </div>
+        <div class="collapsible-content show">
+          <div class="presets-grid">
+            <!-- Header Settings -->
+            <div class="form-group">
+              <label class="form-label">📅 Header Regex Pattern</label>
+              <input 
+                type="text" 
+                id="headerRegex" 
+                class="form-control" 
+                placeholder="Regex to extract date/time from header"
+              />
+              <small style="color: #6b7280; font-size: 0.8rem;">
+                Example: (\\d{2}-\\d{2}-\\d{4})\\s*\\|\\s*(\\d{2}:\\d{2}(?:AM|PM))
+              </small>
+            </div>
+
+            <!-- Markers -->
+            <div class="form-group">
+              <label class="form-label">🎯 Start Marker</label>
+              <input 
+                type="text" 
+                id="startMarker" 
+                class="form-control" 
+                placeholder="Marker to start the content section"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">🎯 End Marker</label>
+              <input 
+                type="text" 
+                id="endMarker" 
+                class="form-control" 
+                placeholder="Marker to end the content section"
+              />
+            </div>
+
+            <!-- Spelling Corrections -->
+            <div class="form-group">
+              <label class="form-label">🔤 Spelling Corrections (JSON)</label>
+              <textarea 
+                id="spellingCorrections" 
+                class="form-control" 
+                placeholder='{"Kolkatta": "Kolkata", "Ahemdabad": "Ahmedabad"}'
+              ></textarea>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="form-group">
+              <label class="form-label">📝 Footer Note</label>
+              <textarea 
+                id="footerNote" 
+                class="form-control" 
+                placeholder="Custom footer note to append"
+              ></textarea>
+            </div>
+
+            <!-- Promotional Line -->
+            <div class="form-group">
+              <label class="form-label">🔗 Promotional Line</label>
+              <textarea 
+                id="promoLine" 
+                class="form-control" 
+                placeholder="Promotional content to include"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="transformMessage()">
+          🔥 Transform Message
+        </button>
+        <button class="btn btn-secondary" onclick="resetToDefaults()">
+          🔄 Reset to Defaults
+        </button>
+        <button class="btn btn-secondary" onclick="exportPresets()">
+          📤 Export Settings
+        </button>
+        <button class="btn btn-secondary" onclick="importPresets()">
+          📥 Import Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // 🔧 Configuration
+    const STORAGE_KEY = "steelMessageTransformerPresets";
+    
+    // 📋 Default Presets
+    const DEFAULT_PRESETS = {
+      headerRegex: "(\\d{2}-\\d{2}-\\d{4})\\s*\\|\\s*(\\d{2}:\\d{2}(?:AM|PM))",
+      startMarker: "〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️",
+      endMarker: "〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️〽️",
+             spellingCorrections: {
+         "Kolkatta ": "Kolkata ",
+         "Ahemdabad ": "Ahmedabad ",
+         "Mujfernagar ": "Muzaffarnagar "
+       },
+      footerNote: `📝Note
+✅All Prices are Spot &  Quoted in Market & PMT
+✅++ All Taxes Extra
+✅💯% Accurate & Fast Service
+✅ Unlimited Growth with Steel Market Updates
+🚨 All Rates Just for information, not any offer for sales or purchase
+🚨 We are not responsible for any Profit and Losses.`,
+      promoLine: `INGOT, BILLET, SCRAP, CAST IRON, TMT,  WIRE ROD, CRC, ROLLING, GOLD, COPPER, PIPE, PATRA, METAL ETC.
+
+https://cosmofeed.com/vig/636faffa726969002cb5b72f`
+    };
+
+    // 🗄️ Storage Management
+    const StorageManager = {
+      load() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          return saved ? JSON.parse(saved) : DEFAULT_PRESETS;
+        } catch (error) {
+          console.error('Error loading presets:', error);
+          return DEFAULT_PRESETS;
+        }
+      },
+
+      save(presets) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
+          return true;
+        } catch (error) {
+          console.error('Error saving presets:', error);
+          return false;
+        }
+      }
+    };
+
+    // 🎨 UI Management
+    const UIManager = {
+      showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      },
+
+      toggleCollapsible(element) {
+        const content = element.nextElementSibling;
+        const isActive = element.classList.contains('active');
+        
+        if (isActive) {
+          element.classList.remove('active');
+          content.classList.remove('show');
+        } else {
+          element.classList.add('active');
+          content.classList.add('show');
+        }
+      },
+
+      updateOutput(content) {
+        document.getElementById('outputMessage').textContent = content;
+      },
+
+      getInputValue(id) {
+        return document.getElementById(id).value;
+      },
+
+      setInputValue(id, value) {
+        document.getElementById(id).value = value;
+      }
+    };
+
+    // 🔄 Transformation Engine
+    const TransformationEngine = {
+      extractHeader(input, headerRegex) {
+        const regex = new RegExp(headerRegex, 'i');
+        const match = input.match(regex);
+        
+        if (match) {
+          return {
+            date: match[1],
+            time: match[2],
+            fullMatch: match[0]
+          };
+        }
+        return null;
+      },
+
+             cleanContent(lines, headerLine, spellingCorrections) {
+         return lines
+           .filter(line => {
+             const trimmed = line.trim();
+             return trimmed !== headerLine &&
+                    !trimmed.includes("STEEL MART INFO SERVICES") &&
+                    !trimmed.match(/^=+$/) &&
+                    !trimmed.includes('📝Note') &&
+                    !trimmed.match(/^\d{2}-\d{2}-\d{4}\s*\|\s*\d{2}:\d{2}(?:AM|PM)\s*🇮🇳\s*\(IST\)\s*📈$/);
+           })
+           .map(line => {
+             let cleaned = line;
+             // Apply spelling corrections with word boundaries
+             Object.entries(spellingCorrections).forEach(([wrong, correct]) => {
+               // For corrections with trailing spaces, use exact match
+               if (wrong.endsWith(' ')) {
+                 const regex = new RegExp(wrong.replace(/\s+$/, '\\s+'), 'gi');
+                 cleaned = cleaned.replace(regex, correct);
+               } else {
+                 const regex = new RegExp(`\\b${wrong}\\b`, 'gi');
+                 cleaned = cleaned.replace(regex, correct);
+               }
+             });
+             return cleaned;
+           });
+       },
+
+      transform(input, presets) {
+        const lines = input.split('\n').map(l => l.trim());
+        
+        // Extract header
+        const header = this.extractHeader(input, presets.headerRegex);
+        
+        // Remove footer content
+        const noteIndex = lines.findIndex(l => l.includes('📝Note'));
+        const contentLines = noteIndex >= 0 ? lines.slice(0, noteIndex) : lines;
+        
+        // Clean content
+        const cleanedLines = this.cleanContent(
+          contentLines, 
+          header?.fullMatch || '', 
+          presets.spellingCorrections
+        );
+        
+        // Build output
+        const output = [];
+        
+        // Add header
+        if (header) {
+          output.push(header.date);
+          // Add space before AM/PM if not present
+          const formattedTime = header.time.replace(/(AM|PM)$/, ' $1');
+          output.push(`⏰${formattedTime}`);
+          output.push('');
+          output.push(presets.startMarker);
+          output.push('');
+        }
+        
+        // Add content
+        for (let line of cleanedLines) {
+          if (/==SCRAP PRICE UPDATES==/i.test(line)) {
+            output.push(presets.endMarker);
+            output.push('');
+            output.push(''); // Extra spacing
+          }
+          output.push(line);
+          // Add extra line after headings
+          if (/^===.*===$/.test(line)) {
+            output.push('');
+          }
+        }
+        
+        // Add end marker and promotional content
+        output.push('');
+        output.push(presets.endMarker);
+        output.push('');
+        output.push(presets.promoLine);
+        output.push('');
+        output.push(presets.footerNote);
+        
+        return output.join('\n');
+      }
+    };
+
+    // 🎛️ Preset Management
+    const PresetManager = {
+      loadPresets() {
+        return StorageManager.load();
+      },
+
+      savePresets() {
+        const presets = {
+          headerRegex: UIManager.getInputValue('headerRegex'),
+          startMarker: UIManager.getInputValue('startMarker'),
+          endMarker: UIManager.getInputValue('endMarker'),
+          spellingCorrections: this.parseSpellingCorrections(),
+          footerNote: UIManager.getInputValue('footerNote'),
+          promoLine: UIManager.getInputValue('promoLine')
+        };
+        
+        if (StorageManager.save(presets)) {
+          UIManager.showToast('Settings saved successfully!');
+        } else {
+          UIManager.showToast('Error saving settings', 'error');
+        }
+      },
+
+      parseSpellingCorrections() {
+        try {
+          const value = UIManager.getInputValue('spellingCorrections');
+          return value ? JSON.parse(value) : {};
+        } catch (error) {
+          UIManager.showToast('Invalid JSON in spelling corrections', 'error');
+          return {};
+        }
+      },
+
+      populateUI(presets) {
+        UIManager.setInputValue('headerRegex', presets.headerRegex);
+        UIManager.setInputValue('startMarker', presets.startMarker);
+        UIManager.setInputValue('endMarker', presets.endMarker);
+        UIManager.setInputValue('spellingCorrections', JSON.stringify(presets.spellingCorrections, null, 2));
+        UIManager.setInputValue('footerNote', presets.footerNote);
+        UIManager.setInputValue('promoLine', presets.promoLine);
+      },
+
+      resetToDefaults() {
+        if (confirm('Are you sure you want to reset all settings to defaults?')) {
+          this.populateUI(DEFAULT_PRESETS);
+          this.savePresets();
+          UIManager.showToast('Settings reset to defaults');
+        }
+      },
+
+      exportPresets() {
+        const presets = this.loadPresets();
+        const dataStr = JSON.stringify(presets, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = 'steel-transformer-settings.json';
+        link.click();
+        
+        UIManager.showToast('Settings exported successfully!');
+      },
+
+      importPresets() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const presets = JSON.parse(e.target.result);
+                this.populateUI(presets);
+                this.savePresets();
+                UIManager.showToast('Settings imported successfully!');
+              } catch (error) {
+                UIManager.showToast('Invalid settings file', 'error');
+              }
+            };
+            reader.readAsText(file);
+          }
+        };
+        
+        input.click();
+      }
+    };
+
+    // 🚀 Main Functions
+    function transformMessage() {
+      const input = UIManager.getInputValue('inputMessage');
+      if (!input.trim()) {
+        UIManager.showToast('Please enter a message to transform', 'error');
+        return;
+      }
+
+      const presets = PresetManager.loadPresets();
+      const transformed = TransformationEngine.transform(input, presets);
+      UIManager.updateOutput(transformed);
+      UIManager.showToast('Message transformed successfully!');
+    }
+
+    function autoTransform() {
+      const input = UIManager.getInputValue('inputMessage');
+      if (input.trim()) {
+        const presets = PresetManager.loadPresets();
+        const transformed = TransformationEngine.transform(input, presets);
+        UIManager.updateOutput(transformed);
+      }
+    }
+
+         function copyOutput() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         navigator.clipboard.writeText(output).then(() => {
+           UIManager.showToast('Output copied to clipboard!');
+         }).catch(() => {
+           UIManager.showToast('Failed to copy to clipboard', 'error');
+         });
+       } else {
+         UIManager.showToast('No output to copy', 'error');
+       }
+     }
+
+     function shareToWhatsApp() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         const encodedText = encodeURIComponent(output);
+         const whatsappUrl = `https://wa.me/?text=${encodedText}`;
+         window.open(whatsappUrl, '_blank');
+         UIManager.showToast('Opening WhatsApp...');
+       } else {
+         UIManager.showToast('No output to share', 'error');
+       }
+     }
+
+     function shareToTelegram() {
+       const output = document.getElementById('outputMessage').textContent;
+       if (output && output !== 'Transformed output will appear here...') {
+         const encodedText = encodeURIComponent(output);
+         const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodedText}`;
+         window.open(telegramUrl, '_blank');
+         UIManager.showToast('Opening Telegram...');
+       } else {
+         UIManager.showToast('No output to share', 'error');
+       }
+     }
+
+    function resetToDefaults() {
+      PresetManager.resetToDefaults();
+    }
+
+    function exportPresets() {
+      PresetManager.exportPresets();
+    }
+
+    function importPresets() {
+      PresetManager.importPresets();
+    }
+
+    function toggleCollapsible(element) {
+      UIManager.toggleCollapsible(element);
+    }
+
+    // 🔄 Auto-save functionality
+    function setupAutoSave() {
+      const inputs = ['headerRegex', 'startMarker', 'endMarker', 'spellingCorrections', 'footerNote', 'promoLine'];
+      inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          PresetManager.savePresets();
+        });
+      });
+    }
+
+    // 🚀 Initialize
+    window.onload = function() {
+      const presets = PresetManager.loadPresets();
+      PresetManager.populateUI(presets);
+      setupAutoSave();
+    };
+  </script>
+</body>
+</html>
