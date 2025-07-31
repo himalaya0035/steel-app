@@ -613,6 +613,14 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
 
              cleanContent(lines, headerLine, spellingCorrections) {
          return lines
+           .map(line => {
+             let cleaned = line;
+             
+             // Remove WhatsApp bold formatting (*text*) first
+             cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');
+             
+             return cleaned;
+           })
            .filter(line => {
              const trimmed = line.trim();
              return trimmed !== headerLine &&
@@ -623,6 +631,7 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
            })
            .map(line => {
              let cleaned = line;
+             
              // Apply spelling corrections with word boundaries
              Object.entries(spellingCorrections).forEach(([wrong, correct]) => {
                // For corrections with trailing spaces, use exact match
@@ -678,7 +687,7 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
           }
           output.push(line);
           // Add extra line after headings
-          if (/^===.*===$/.test(line)) {
+          if (/^=+.*=+$/.test(line)) {
             output.push('');
           }
         }
