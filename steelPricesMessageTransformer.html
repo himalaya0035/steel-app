@@ -244,6 +244,40 @@
       overflow-y: auto;
     }
 
+    .interactive-line {
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      margin: 1px 0;
+    }
+
+    .interactive-line:hover {
+      background: rgba(79, 70, 229, 0.1);
+      border-left: 3px solid #4f46e5;
+    }
+
+    .interactive-line.heading {
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid #10b981;
+      font-weight: bold;
+    }
+
+    .interactive-line.heading:hover {
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .interactive-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+
     .toast {
       position: fixed;
       top: 20px;
@@ -393,6 +427,17 @@
              <div id="outputMessage" class="output-text">
                Transformed output will appear here...
              </div>
+             
+             <!-- Interactive Mode Controls -->
+             <div class="interactive-controls">
+                             <button class="btn btn-secondary" onclick="toggleInteractiveMode()" id="interactiveBtn">
+                🎯 Manage Headings
+              </button>
+               <button class="btn btn-success" onclick="applyHeadingFormatting()" style="display: none;" id="applyHeadingsBtn">
+                 ✅ Apply Formatting
+               </button>
+             </div>
+             
              <div class="output-actions">
                <button class="btn btn-success" onclick="copyOutput()">
                  📋 Copy
@@ -617,7 +662,7 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
              let cleaned = line;
              
              // Remove WhatsApp bold formatting (*text*) first
-             cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');
+            //  cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');
              
              return cleaned;
            })
@@ -678,17 +723,38 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
           output.push('');
         }
         
-        // Add content
-        for (let line of cleanedLines) {
+        // Add content with auto heading detection
+        for (let i = 0; i < cleanedLines.length; i++) {
+          const line = cleanedLines[i];
+          const prevLine = i > 0 ? cleanedLines[i - 1] : '';
+          const nextLine = i < cleanedLines.length - 1 ? cleanedLines[i + 1] : '';
+          
           if (/==SCRAP PRICE UPDATES==/i.test(line)) {
             output.push(presets.endMarker);
             output.push('');
             output.push(''); // Extra spacing
           }
-          output.push(line);
-          // Add extra line after headings
-          if (/^=+.*=+$/.test(line)) {
-            output.push('');
+          
+          // Auto heading detection - only asterisk pattern
+          const trimmedLine = line.trim();
+          
+          // Pattern: *text* (enclosed in asterisks)
+          if (/^\*([^*]+)\*$/.test(trimmedLine)) {
+            const match = trimmedLine.match(/^\*([^*]+)\*$/);
+            if (match) {
+              // Check if the content is only equals signs
+              if (/^=+$/.test(match[1].trim())) {
+                // Skip lines like *=======* (don't output them)
+                continue;
+              } else {
+                // Regular text in asterisks - format as heading
+                output.push('');
+                output.push(`**${match[1].trim()}**`);
+                output.push('');
+              }
+            }
+          } else {
+            output.push(line);
           }
         }
         
@@ -820,6 +886,7 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
          function copyOutput() {
        const output = document.getElementById('outputMessage').textContent;
        if (output && output !== 'Transformed output will appear here...') {
+         // Copy with default Telegram format (**)
          navigator.clipboard.writeText(output).then(() => {
            UIManager.showToast('Output copied to clipboard!');
          }).catch(() => {
@@ -833,7 +900,9 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
      function shareToWhatsApp() {
        const output = document.getElementById('outputMessage').textContent;
        if (output && output !== 'Transformed output will appear here...') {
-         const encodedText = encodeURIComponent(output);
+         // Convert **heading** to *heading* for WhatsApp
+         const whatsappFormatted = output.replace(/\*\*([^*]+)\*\*/g, '*$1*');
+         const encodedText = encodeURIComponent(whatsappFormatted);
          const whatsappUrl = `https://wa.me/?text=${encodedText}`;
          window.open(whatsappUrl, '_blank');
          UIManager.showToast('Opening WhatsApp...');
@@ -845,6 +914,7 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
      function shareToTelegram() {
        const output = document.getElementById('outputMessage').textContent;
        if (output && output !== 'Transformed output will appear here...') {
+         // Keep **heading** format for Telegram (already correct)
          const encodedText = encodeURIComponent(output);
          const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodedText}`;
          window.open(telegramUrl, '_blank');
@@ -868,6 +938,180 @@ https://cosmofeed.com/vig/636faffa726969002cb5b72f`
 
     function toggleCollapsible(element) {
       UIManager.toggleCollapsible(element);
+    }
+
+    // 🎯 Interactive Heading Functions
+    let interactiveMode = false;
+    let headingLines = new Set();
+    let originalText = ''; // Store original text to revert changes
+
+    function toggleInteractiveMode() {
+      interactiveMode = !interactiveMode;
+      const button = document.getElementById('interactiveBtn');
+      
+      if (interactiveMode) {
+        button.textContent = '🎯 Exit Headings Management';
+        button.classList.remove('btn-secondary');
+        button.classList.add('btn-primary');
+        document.getElementById('applyHeadingsBtn').style.display = 'inline-flex';
+        makeOutputInteractive();
+        UIManager.showToast('Interactive mode enabled! Click on lines to mark as headings.');
+      } else {
+        button.textContent = '🎯 Manage Headings';
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-secondary');
+        document.getElementById('applyHeadingsBtn').style.display = 'none';
+        
+        // Revert to original text if no headings were applied
+        if (headingLines.size === 0) {
+          UIManager.updateOutput(originalText);
+        } else {
+          makeOutputStatic();
+        }
+        
+        UIManager.showToast('Interactive mode disabled.');
+      }
+    }
+
+    function makeOutputInteractive() {
+      const outputDiv = document.getElementById('outputMessage');
+      
+      // Always get the current text content, regardless of current state
+      let currentText = '';
+      
+      if (outputDiv.children.length > 0) {
+        // Currently in interactive mode, extract text from elements
+        currentText = Array.from(outputDiv.children).map(child => {
+          if (child.tagName === 'BR') return '';
+          return child.textContent;
+        }).join('\n');
+      } else {
+        // Currently in text mode
+        currentText = outputDiv.textContent;
+      }
+      
+      // Store original text for reverting changes
+      originalText = currentText;
+      
+      // Convert to interactive mode
+      const lines = currentText.split('\n');
+      
+      outputDiv.innerHTML = '';
+      
+      lines.forEach((line, index) => {
+        if (line.trim() === '') {
+          outputDiv.appendChild(document.createElement('br'));
+        } else {
+          const lineDiv = document.createElement('div');
+          lineDiv.className = 'interactive-line';
+          
+          // Check if this line is already formatted as a heading (has **text**)
+          const isAlreadyHeading = /^\*\*([^*]+)\*\*$/.test(line.trim());
+          
+          if (isAlreadyHeading) {
+            // If it's already a heading, mark it as selected and show it can be removed
+            headingLines.add(index);
+            lineDiv.classList.add('heading');
+            lineDiv.textContent = line;
+            lineDiv.onclick = () => removeHeading(index, lineDiv);
+            lineDiv.title = 'Click to remove heading formatting';
+          } else {
+            // Regular line that can be made into a heading
+            lineDiv.textContent = line;
+            lineDiv.onclick = () => toggleHeading(index, lineDiv);
+            lineDiv.title = 'Click to add heading formatting';
+            
+            if (headingLines.has(index)) {
+              lineDiv.classList.add('heading');
+            }
+          }
+          
+          outputDiv.appendChild(lineDiv);
+        }
+      });
+    }
+
+    function makeOutputStatic() {
+      const outputDiv = document.getElementById('outputMessage');
+      
+      // Extract text from interactive elements
+      const lines = Array.from(outputDiv.children).map(child => {
+        if (child.tagName === 'BR') return '';
+        return child.textContent;
+      });
+      
+      // Convert back to text mode
+      outputDiv.textContent = lines.join('\n');
+    }
+
+    function toggleHeading(index, element) {
+      if (headingLines.has(index)) {
+        headingLines.delete(index);
+        element.classList.remove('heading');
+        // Revert to original text without asterisks
+        const originalLines = originalText.split('\n');
+        element.textContent = originalLines[index] || element.textContent.replace(/^\*+|\*+$/g, '');
+      } else {
+        headingLines.add(index);
+        element.classList.add('heading');
+        // Don't modify text content, just show visual feedback
+        // Text will be formatted when applying headings
+      }
+    }
+
+    function removeHeading(index, element) {
+      headingLines.delete(index);
+      element.classList.remove('heading');
+      // Revert to original text without ** formatting
+      const originalLines = originalText.split('\n');
+      const originalLine = originalLines[index] || '';
+      const cleanedText = originalLine.replace(/^\*\*|\*\*$/g, '');
+      element.textContent = cleanedText;
+      console.log(`removeHeading: "${originalLine}" -> "${cleanedText}"`);
+    }
+
+    function applyHeadingFormatting() {
+      if (!interactiveMode) return;
+      
+      const outputDiv = document.getElementById('outputMessage');
+      const lines = Array.from(outputDiv.children).map((child, index) => {
+        if (child.tagName === 'BR') return '';
+        
+        let text = child.textContent;
+        if (headingLines.has(index)) {
+          // Check if this was originally a heading that should be removed
+          const originalLines = originalText.split('\n');
+          const originalLine = originalLines[index] || '';
+          const wasAlreadyHeading = /^\*\*([^*]+)\*\*$/.test(originalLine.trim());
+          
+          if (wasAlreadyHeading) {
+            // Remove heading formatting - return original text without **
+            console.info(originalLine)
+            return originalLine;
+          } else {
+            // Add heading formatting
+            return `\n**${text.replace(/^\*+|\*+$/g, '')}**\n`;
+          }
+        }
+        return text;
+      });
+      
+      const formattedText = lines.join('\n');
+      
+      // Clear heading selections
+      headingLines.clear();
+      
+      // Update output with formatted text
+      UIManager.updateOutput(formattedText);
+      UIManager.showToast('Heading formatting applied!');
+      
+      // Exit interactive mode without calling toggleInteractiveMode
+      interactiveMode = false;
+      const button = document.getElementById('interactiveBtn');
+      button.textContent = '🎯 Manage Headings';
+      button.classList.remove('btn-primary');
+      button.classList.add('btn-secondary');
+      document.getElementById('applyHeadingsBtn').style.display = 'none';
     }
 
     // 🔄 Auto-save functionality
